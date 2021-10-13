@@ -14,7 +14,7 @@ public:
     void Shutdown();
     void ProcessInput();
 
-    void InitializeStateToRegister();
+    void InitializeSceneStateToRegister();
 
     class StateProcessor<SceneState>* sceneState;
 private:
@@ -23,7 +23,7 @@ private:
     const char* const TITLE = "CppStatePattern";
     bool isRunning;
 
-    /*class TitleState* titleState;
-    class GameMainState* gameMainState;
+    class TitleScene* titleScene;
+    /*class GameMainState* gameMainState;
     class EndState* endState;*/
 };
