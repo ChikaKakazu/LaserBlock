@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "DxLib.h"
 #include "StateRegister.h"
+#include "TitleScene.h"
 
 
 Game::Game() : isRunning(true)
@@ -25,7 +26,7 @@ bool Game::Initialize()
 
     if (DxLib_Init() == -1) return -1;
 
-    InitializeStateToRegister();
+    InitializeSceneStateToRegister();
 
     return true;
 }
@@ -50,15 +51,13 @@ void Game::UpdateGame()
 {
     ClearDrawScreen();
 
-    // ステートを切り替える
-    /*if (GetMouseInput() & MOUSE_INPUT_LEFT)
-        stateProcessor->ChangeState(StateType::GameMain);
-    else if (GetMouseInput() & MOUSE_INPUT_RIGHT)
-        stateProcessor->ChangeState(StateType::End);
-    else if (GetMouseInput() & MOUSE_INPUT_MIDDLE)
-        stateProcessor->ChangeState(StateType::Title);
+    // ステートを切り替える(確認用)
+    if (GetMouseInput() & MOUSE_INPUT_LEFT)
+        sceneState->ChangeState(SceneState::ETitle);
 
-    stateProcessor->stateRegister->Update();*/
+
+    // 現在のシーンのUpdateを呼ぶ 
+    sceneState->stateRegister->Update();
 
     ScreenFlip();
 
@@ -73,18 +72,18 @@ void Game::Shutdown()
 /// <summary>
 /// 各ステートを登録する
 /// </summary>
-void Game::InitializeStateToRegister()
+void Game::InitializeSceneStateToRegister()
 {
-    //stateProcessor = new StateProcessor<StateType>(StateType::Title);
-
-    //titleState = new TitleState();
+    sceneState = new StateProcessor<SceneState>(SceneState::ETitle);
+    
+    titleScene = new TitleScene();
     //gameMainState = new GameMainState();
     //endState = new EndState();
 
-    //// TitleState
-    //std::function<void()> TitleStateExecute = std::bind(&TitleState::Execute, titleState);
-    //std::function<void()> TitleStateUpdate = std::bind(&TitleState::Update, titleState);
-    //std::function<void()> TitleStateExit = std::bind(&TitleState::Exit, titleState);
+    // TitleScene
+    std::function<void()> titleSceneExecute = std::bind(&TitleScene::Execute, titleScene);
+    std::function<void()> titleSceneUpdate = std::bind(&TitleScene::Update, titleScene);
+    std::function<void()> titleSceneExit = std::bind(&TitleScene::Exit, titleScene);
     //// GameMainState
     //std::function<void()> GameMainStateExecute = std::bind(&GameMainState::Execute, gameMainState);
     //std::function<void()> GameMainStateUpdate = std::bind(&GameMainState::Update, gameMainState);
@@ -94,8 +93,8 @@ void Game::InitializeStateToRegister()
     //std::function<void()> EndStateUpdate = std::bind(&EndState::Update, endState);
     //std::function<void()> EndStateExit = std::bind(&EndState::Exit, endState);
 
-    //// ステートを登録する
-    //stateProcessor->RegisterState(StateType::Title, TitleStateExecute, TitleStateUpdate, TitleStateExit);
+    // ステートを登録する
+    sceneState->RegisterState(SceneState::ETitle, titleSceneExecute, titleSceneUpdate, titleSceneExit);
     //stateProcessor->RegisterState(StateType::GameMain, GameMainStateExecute, GameMainStateUpdate, GameMainStateExit);
     //stateProcessor->RegisterState(StateType::End, EndStateExecute, EndStateUpdate, EndStateExit);
 }

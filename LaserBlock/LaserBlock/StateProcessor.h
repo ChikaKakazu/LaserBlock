@@ -10,15 +10,18 @@ using Exit = std::function<void()>;
 template <class TEnum>
 class StateProcessor
 {
-public:
-    StateProcessor(TEnum stateType);
+    public:
+        StateProcessor(TEnum stateType);
 
-    void RegisterState(TEnum stateType, Execute execute, Update update, Exit exit);
-    void ChangeState(TEnum toStateType);
+        // ステートを登録する
+        void RegisterState(TEnum stateType, Execute execute, Update update, Exit exit);
+        // ステートを切り替える
+        void ChangeState(TEnum toStateType);
 
-    class StateRegister* stateRegister;
-    std::unordered_map<TEnum, class StateRegister*> stateMapping;
-private:
+        // 登録したステート
+        class StateRegister* stateRegister;
+
+        std::unordered_map<TEnum, class StateRegister*> stateMapping;
 };
 
 /// <summary>
