@@ -98,3 +98,45 @@ void Game::InitializeSceneStateToRegister()
     //stateProcessor->RegisterState(StateType::GameMain, GameMainStateExecute, GameMainStateUpdate, GameMainStateExit);
     //stateProcessor->RegisterState(StateType::End, EndStateExecute, EndStateUpdate, EndStateExit);
 }
+
+/// <summary>
+/// Actorを追加する
+/// </summary>
+/// <param name="actor"></param>
+void Game::AddActor(Actor* actor)
+{
+    // Actorの更新中なら待機状態に追加
+    if (isUpdateActor)
+    {
+        pendiongActors.emplace_back(actor);
+    }
+    else
+    {
+        actors.emplace_back(actor);
+    }
+}
+
+/// <summary>
+/// Actorを削除する
+/// </summary>
+/// <param name="actor"></param>
+void Game::RemoveActor(Actor* actor)
+{
+    // Actorが待機状態なら
+    auto iter = std::find(pendiongActors.begin(), pendiongActors.end(), actor);
+    if (iter != pendiongActors.end())
+    {
+        // 最後に持ってきて削除する
+        std::iter_swap(iter, pendiongActors.end() - 1);
+        pendiongActors.pop_back();
+    }
+
+    // Actorが更新中なら
+    iter = std::find(actors.begin(), actors.end(), actor);
+    if (iter != actors.end())
+    {
+        // 最後に持ってきて削除する
+        std::iter_swap(iter, actors.end() -1);
+        actors.pop_back();
+    }
+}

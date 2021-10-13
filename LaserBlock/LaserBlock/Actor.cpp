@@ -5,27 +5,43 @@
 
 Actor::Actor(Game* game) : game(game)
 {
-
+    // Actorを追加する
+    game->AddActor(this);
 }
 
 Actor::~Actor()
 {
-
+    // Actorを削除する
+    game->RemoveActor(this);
+    // コンポーネントを全て削除する
+    while (!components.empty())
+    {
+        // 後ろから削除していく
+        delete components.back();
+    }
 }
 
 void Actor::Update()
 {
-
+    if (actorState == ActorState::EActive)
+    {
+        UpdateComponents();
+        UpdateActor();
+    }
 }
 
 void Actor::UpdateComponents()
 {
-
+    // Actorについている全てのコンポーネントを更新する
+    for (auto comp : components)
+    {
+        comp->Update();
+    }
 }
 
 void Actor::UpdateActor()
 {
-
+    
 }
 
 /// <summary>
